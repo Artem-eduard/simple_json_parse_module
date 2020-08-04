@@ -9,6 +9,14 @@ Begin VB.Form Form1
    ScaleHeight     =   4350
    ScaleWidth      =   9435
    StartUpPosition =   3  'Windows Default
+   Begin VB.CommandButton Command2 
+      Caption         =   "Command2"
+      Height          =   495
+      Left            =   2760
+      TabIndex        =   1
+      Top             =   720
+      Width           =   1575
+   End
    Begin VB.CommandButton Command1 
       Caption         =   "Command1"
       Height          =   495
@@ -66,7 +74,7 @@ strFileName = App.Path & "\sample.json"
             
             Debug.Print "max_price = " & max_price
             Debug.Print "min_price = " & min_price
-                    
+           ' Debug.Print "main_photo = " & JSON.toString(p.Item("result").Item(i).Item("hotel_data").Item(j).Item("main_photo"))
           Next i
            
 
@@ -92,3 +100,50 @@ Public Function ReadTextFile(sFilePath As String) As String
    End If
    
 End Function
+
+Private Sub Command2_Click()
+Dim strFileName As String
+strFileName = App.Path & "\sample2.json"
+
+
+  Set p = JSON.parse(ReadTextFile(strFileName))
+      If Not (p Is Nothing) Then
+         If JSON.GetParserErrors <> "" Then
+            MsgBox JSON.GetParserErrors, vbInformation, "Parsing Error(s) occured"
+         Else
+         
+          Set p2 = p.Item("result")
+          Dim count As Integer
+          count = p.Item("result").count
+          For i = 1 To count
+                   
+            Debug.Print "hotel_id = " & JSON.toString(p.Item("result").Item(i).Item("hotel_id"))
+            
+            Dim count_of_hotel_photos As Integer
+            count_of_hotel_photos = p.Item("result").Item(i).Item("hotel_data").Item("hotel_photos").count
+      
+            Dim strphotoflag As Boolean
+            For j = 1 To count_of_hotel_photos
+                         
+              ' Debug.Print "main_photo = " & JSON.toString(p.Item("result").Item(i).Item("hotel_data").Item("hotel_photos").Item(j).Item("main_photo"))
+              strphotoflag = p.Item("result").Item(i).Item("hotel_data").Item("hotel_photos").Item(j).Item("main_photo")
+              If strphotoflag = True Then
+              
+              Debug.Print JSON.toString(p.Item("result").Item(i).Item("hotel_data").Item("hotel_photos").Item(j).Item("url_original"))
+              
+              End If
+              
+                
+                
+            Next j
+            
+           
+          
+          Next i
+           
+
+         End If
+      Else
+         MsgBox "An error occurred parsing " & cd.FileName
+      End If
+End Sub
